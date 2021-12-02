@@ -6,7 +6,9 @@
 const url = "https://livejs-api.hexschool.io/api/livejs/v1";
 const apiPath = "ken888686";
 const productUrl = `${url}/customer/${apiPath}/products`;
+const cartUrl = `${url}/customer/${apiPath}/carts`;
 const products = [];
+let carts = [];
 
 // 渲染產品
 const productList = document.querySelector(".productList");
@@ -23,12 +25,33 @@ function renderProducts() {
           <p class="card-text"><strong>原始價格:</strong>${item.origin_price}</p>
           <p class="card-text"><strong>售價:</strong>${item.price}</p>
           <p class="card-text"><strong>描述:</strong>${item.description}</p>
-          <button type="button" class="btn btn-primary">加入購物車</button>
+          <button type="button" class="btn btn-primary" data-productid="${item.id}">加入購物車</button>
         </div>
       </div>
     </div>`;
   });
   productList.innerHTML = htmlStr;
+  let buttons = document.querySelectorAll("button");
+  buttons.forEach(function (item) {
+    item.addEventListener("click", function (e) {
+      addToCart(e.target.dataset.productid);
+    });
+  });
+}
+
+// 渲染購物車
+const cartList = document.querySelector(".cartList");
+function renderCarts() {
+  let htmlStr = "";
+  carts.forEach((item) => {
+    htmlStr += `
+    <li>
+      <p>名稱: <span>${item.product.title}</span></p>
+      <p>數量: <span>${item.quantity}</span></p>
+    </li>
+    `;
+  });
+  cartList.innerHTML = htmlStr;
 }
 
 // 取得產品列表
@@ -39,4 +62,28 @@ function getProducts() {
   });
 }
 
+// 取得購物車
+function getCarts() {
+  axios.get(cartUrl).then((res) => {
+    carts = [...res.data.carts];
+    renderCarts();
+  });
+}
+
+// 加入購物車
+function addToCart(productId) {
+  axios
+    .post(cartUrl, {
+      data: {
+        productId: productId,
+        quantity: 1,
+      },
+    })
+    .then((res) => {
+      carts = [...res.data.carts];
+      renderCarts();
+    });
+}
+
+getCarts();
 getProducts();
