@@ -18,7 +18,7 @@ function renderProducts() {
     htmlStr += `
     <div class="col-6 mb-3">
       <div class="card h-100">
-        <img src="${item.images}" class="card-img-top productImg" alt="產品圖片">
+        <img src="${item.images}" class="card-img-top productImg" alt="${item.title}">
         <div class="card-body">
           <h5 class="card-title"><strong>標題:</strong>${item.title}</h5>
           <p class="card-text"><strong>種類:</strong>${item.category}</p>
