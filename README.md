@@ -1,5 +1,5 @@
-# day39
-DAY39 每日任務
+# day-mission
+每日任務
 
 ## Github Page
-[ken888686.github.io/day39](https://ken888686.github.io/day39/)
+[ken888686.github.io/day-mission](https://ken888686.github.io/day-mission/)
