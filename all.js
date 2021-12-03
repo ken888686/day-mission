@@ -7,6 +7,7 @@ const url = "https://livejs-api.hexschool.io/api/livejs/v1";
 const apiPath = "ken888686";
 const productUrl = `${url}/customer/${apiPath}/products`;
 const cartUrl = `${url}/customer/${apiPath}/carts`;
+const orderUrl = `${url}/customer/${apiPath}/orders`;
 const products = [];
 let carts = [];
 
@@ -84,6 +85,91 @@ function addToCart(productId) {
       renderCarts();
     });
 }
+
+// 送出訂單
+function submitOrder(data) {
+  axios.post(orderUrl, data).then((res) => {
+    carts = [];
+    renderCarts();
+  });
+}
+
+var constraints = {
+  姓名: {
+    presence: {
+      message: "必填欄位",
+    },
+  },
+  電話: {
+    presence: {
+      message: "必填欄位",
+    },
+    length: {
+      minimum: 9,
+      message: "號碼需超過 9 碼",
+    },
+  },
+  信箱: {
+    presence: {
+      message: "必填欄位",
+    },
+    email: {
+      message: "格式不正確",
+    },
+  },
+  地址: {
+    presence: {
+      message: "必填欄位",
+    },
+  },
+};
+const form = document.querySelector(".submitForm");
+const inputs = document.querySelectorAll("input[type=text],input[type=tel]");
+const dataMsg = document.querySelectorAll("[data-msg]");
+form.addEventListener(
+  "click",
+  function (e) {
+    e.preventDefault();
+    const errorMsg = validate(form, constraints);
+    if (errorMsg) {
+      showErrorsMsg(errorMsg);
+    } else {
+      const data = {
+        data: {
+          user: {
+            name: document.querySelector("#customerName").value.trim(),
+            tel: document.querySelector("#customerTel").value.trim(),
+            email: document.querySelector("#customerEmail").value.trim(),
+            address: document.querySelector("#customerAddress").value.trim(),
+            payment: document.querySelector("#payMethod").value.trim(),
+          },
+        },
+      };
+      console.log(data);
+      // submitOrder(data);
+    }
+  },
+  false
+);
+
+function showErrorsMsg(msgs) {
+  dataMsg.forEach((item) => {
+    item.textContent = msgs[item.dataset.msg];
+  });
+}
+
+inputs.forEach((item) => {
+  item.addEventListener("change", function (e) {
+    e.preventDefault();
+    let targetName = item.name;
+    let errors = validate(form, constraints);
+    item.nextElementSibling.textContent = "";
+    if (errors) {
+      document.querySelector(`[data-msg='${targetName}']`).textContent =
+        errors[targetName];
+    }
+  });
+});
 
 getCarts();
 getProducts();
